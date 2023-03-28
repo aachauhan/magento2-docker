@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="AdiDev_DevSupport::greetings" title="Aditya Develops" translate="title" module="AdiDev_DevSupport" parent="Magento_Backend::content" sortOrder="50" dependsOnModule="AdiDev_DevSupport" resource="AdiDev_DevSupport::greetings"/>
+        <add id="AdiDev_DevSupport::greetings_support" title="Support Info" translate="title" module="AdiDev_DevSupport" parent="AdiDev_DevSupport::greetings" sortOrder="10" dependsOnModule="AdiDev_DevSupport" action="devsupport/support" resource="AdiDev_DevSupport::greetings"/>
+    </menu>
+</config>

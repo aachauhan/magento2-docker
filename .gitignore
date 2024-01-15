@@ -12,7 +12,7 @@ src/sitemap
 src/sitemap.xml
 /pub/sitemap
 /pub/sitemap.xml
-/.idea
+src/.idea
 /.gitattributes
 /app/config_sandbox
 src/app/etc/config.php

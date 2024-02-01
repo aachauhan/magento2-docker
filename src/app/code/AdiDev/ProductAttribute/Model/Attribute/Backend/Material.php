@@ -16,8 +16,8 @@ class Material extends AbstractBackend
     public function validate($object)
     {
         $value = $object->getData($this->getAttribute()->getAttributeCode());
-        //TO DO - get the correct id and enter in the line below
-        if(($object->getAttributeSetId()) && ($value == 'fur')){
+        //TO DO - get the correct id and enter in the line below - checked its 4 for Default
+        if(($object->getAttributeSetId() == 4) && ($value == 'fur')){
             throw new LocalizedException(__('Bottoms cannot be fur'));
         }
     }

@@ -1,0 +1,24 @@
+<?php
+/**
+ * @var $block \AdiDev\DevSupport\Block\Data
+ */
+
+$apiData = $block->getAPIData();
+
+?>
+
+<div class="container">
+    <h2>Data from API</h2>
+    <?php if (!empty($data)): ?>
+        <ul>
+            <?php foreach ($data as $item): ?>
+                <li><?php echo $item['name']; ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p>No data available from the API.</p>
+    <?php endif; ?>
+</div>
+
+<!-- // Do not add any logic to this file. This file only contains presentation layer. -->
+

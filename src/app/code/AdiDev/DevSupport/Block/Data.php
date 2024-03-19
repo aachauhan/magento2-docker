@@ -4,16 +4,11 @@ namespace AdiDev\DevSupport\Block;
 
 use Magento\Framework\View\Element\Template;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\ClientFactory;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ResponseFactory;
 use Magento\Framework\Webapi\Rest\Request;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\App\Response\HttpFactory;
-use Magento\Framework\HTTP\Client\Curl;
-use Magento\Framework\HTTP\ClientFactory;
-use Psr\Log\LoggerInterface;
-
 
 class Data extends \Magento\Framework\View\Element\Template
 {
@@ -22,8 +17,6 @@ class Data extends \Magento\Framework\View\Element\Template
      */
     const API_REQUEST_URI = 'https://official-joke-api.appspot.com/random_joke';
 
-    protected $httpClientFactory;
-    protected $logger;
 
     /**
      * @var ResponseFactory
@@ -44,11 +37,9 @@ class Data extends \Magento\Framework\View\Element\Template
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         ClientFactory $httpClientFactory,
-        LoggerInterface $logger,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->logger = $logger;
         $this->httpClientFactory = $httpClientFactory;
     }
 
@@ -59,17 +50,40 @@ class Data extends \Magento\Framework\View\Element\Template
      */
     public function getAPIData(): array
     {
-        $httpClient = $this->httpClientFactory->create();
-        $httpClient->setUri(self::API_REQUEST_URI);
-        $httpClient->setMethod(\Zend\Http\Request::METHOD_GET);
-        try{
-            $response = $httpClient->send();
-            $data = json_decode($response->getBody(), true);
-            return $data;
-        } catch (RequestException $e) {
-            $this->logger->error($e->getMessage());
-            return [];
-        }
+        $response = $this->doRequest(self::API_REQUEST_URI);
+        $statusCode = $response->getStatusCode();
+        $responseBody = $response->getBody();
+        $responseContent = $responseBody->getContents();
 
+        return json_decode($responseContent, true);
+
+    }
+
+    private function doRequest(
+        string $uriEndpoint,
+        array $params = [],
+        string $requestMethod = Request::HTTP_METHOD_GET
+    ) : Response {
+        $client = $this->clientFactory->create(['config' => [
+            'base_uri' => self::API_REQUEST_URI
+        ]]);
+        try{
+            $response = $client->request(
+                $requestMethod,
+                $uriEndpoint,
+                $params
+            );
+        } catch (GuzzleException $e) {
+            /** @var Response $response */
+            $response = $this->responseFactory->create([
+                'status' => $exception->getCode(),
+                'reason' => $exception->getMessage()
+            ]);
+        }
+        return $response;
+    }
+
+    public function getTestFunction() {
+        return "Hello World";
     }
 }

@@ -4,6 +4,8 @@
  */
 
 $apiData = $block->getAPIData();
+$testBlock = $block->getTestFunction();
+echo $testBlock;
 
 ?>
 
@@ -15,6 +17,7 @@ $apiData = $block->getAPIData();
     <?php else: ?>
         <p>No joke available from the API.</p>
     <?php endif; ?>
+    <p><?php echo "test block " . $testBlock; ?></p>
 </div>
 
 <!-- // Do not add any logic to this file. This file only contains presentation layer. -->

@@ -12,6 +12,7 @@ use Magento\Framework\App\Response\Http;
 use Magento\Framework\App\Response\HttpFactory;
 use Magento\Framework\HTTP\Client\Curl;
 use Magento\Framework\HTTP\ClientFactory;
+use Psr\Log\LoggerInterface;
 
 
 class Data extends \Magento\Framework\View\Element\Template
@@ -22,6 +23,7 @@ class Data extends \Magento\Framework\View\Element\Template
     const API_REQUEST_URI = 'https://official-joke-api.appspot.com/random_joke';
 
     protected $httpClientFactory;
+    protected $logger;
 
     /**
      * @var ResponseFactory
@@ -42,9 +44,11 @@ class Data extends \Magento\Framework\View\Element\Template
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         ClientFactory $httpClientFactory,
+        LoggerInterface $logger,
         array $data = []
     ) {
         parent::__construct($context, $data);
+        $this->logger = $logger;
         $this->httpClientFactory = $httpClientFactory;
     }
 
@@ -58,9 +62,14 @@ class Data extends \Magento\Framework\View\Element\Template
         $httpClient = $this->httpClientFactory->create();
         $httpClient->setUri(self::API_REQUEST_URI);
         $httpClient->setMethod(\Zend\Http\Request::METHOD_GET);
-        $response = $httpClient->request();
-        $data = json_decode($response->getBody(), true);
-        return $data;
+        try{
+            $response = $httpClient->send();
+            $data = json_decode($response->getBody(), true);
+            return $data;
+        } catch (RequestException $e) {
+            $this->logger->error($e->getMessage());
+            return [];
+        }
 
     }
 }

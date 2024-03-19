@@ -7,6 +7,7 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\View\Result\Page;
+use Magento\Framework\Controller\Result\Redirect;
 
 class Index extends Action implements \Magento\Framework\App\Action\HttpGetActionInterface
 {
@@ -18,6 +19,9 @@ class Index extends Action implements \Magento\Framework\App\Action\HttpGetActio
      */
     protected $resultPageFactory;
 
+    protected $httpClientFactory;
+
+
     /**
      * Constructor
      *
@@ -26,10 +30,12 @@ class Index extends Action implements \Magento\Framework\App\Action\HttpGetActio
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory
+        PageFactory $resultPageFactory,
+        \Zend\Http\ClientFactory $httpClientFactory
     ) {
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
+        $this->httpClientFactory = $httpClientFactory;
     }
 
     /**
@@ -39,24 +45,29 @@ class Index extends Action implements \Magento\Framework\App\Action\HttpGetActio
      */
     public function execute()
     {
-        $httpClient = new \Zend\Http\Client();
-        $httpClient->setUri('https://official-joke-api.appspot.com/random_joke');
-        $httpClient->setMethod(\Zend\Http\Request::METHOD_GET);
-        $response = $httpClient->send();
+        try{
+            $httpClient = $this->httpClientFactory->create();
+            $httpClient->setUri('https://official-joke-api.appspot.com/random_joke');
+            $httpClient->setMethod(\Zend\Http\Request::METHOD_GET);
+            $response = $httpClient->send();
 
-        if ($response->isSuccess()) {
-            $apiData = json_decode($response->getBody(), true);
+            if ($response->isSuccess()) {
+                $apiData = json_decode($response->getBody(), true);
+                $resultPage = $this->resultPageFactory->create();
+                $resultPage->setActiveMenu(static::MENU_ID);
+                $resultPage->getConfig()->getTitle()->prepend(__('API Connection'));
+                return $resultPage;
+            }
+            else {
+                $this->messageManager->addError(__('Failed to fetch data from the API.'));
+            }
+
         }
-        else {
-            $this->messageManager->addError(__('Failed to fetch data from the API.'));
-            $this->_redirect('*/*/');
+        catch (\Exception $e) {
+            $this->messageManager->addError(__('An error occurred while processing your request.'));
+
         }
 
-
-        $resultPage = $this->resultPageFactory->create();
-        $resultPage->setActiveMenu(static::MENU_ID);
-        $resultPage->getConfig()->getTitle()->prepend(__('API Connection'));
-
-        return $resultPage;
+        return $this->_redirect('*/*/');
     }
 }

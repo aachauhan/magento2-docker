@@ -7,7 +7,7 @@
             </action>
         </referenceBlock>
         <referenceContainer name="content">
-            <block class="Magento\Backend\Block\Template" template="AdiDev_DevSupport::apiconnection.phtml"/>
+            <block class="AdiDev\DevSupport\Block\Data" name="api.connection" template="AdiDev_DevSupport::apiconnection.phtml"/>
         </referenceContainer>
     </body>
 </page>

@@ -51,7 +51,6 @@ class ApiData extends \Magento\Framework\View\Element\Template
     public function execute(): array
     {
         $response = $this->doRequest(self::API_REQUEST_URI);
-        var_dump($response);
         $statusCode = $response->getStatusCode();
         $responseBody = $response->getBody();
         $responseContent = $responseBody->getContents();

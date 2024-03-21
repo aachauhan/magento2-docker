@@ -2,14 +2,13 @@
 /**
  * @var $block \AdiDev\DevSupport\Block\Data
  */
-
 $apiData = $block->getAPIData();
-var_dump($apiData);
+// var_dump($apiData);
 
 ?>
 
 <div class="container">
-    <h2>Data from API</h2>
+    <h2>Joke</h2>
     <?php if (!empty($apiData) && isset($apiData['setup']) && isset($apiData['punchline'])): ?>
         <p><strong>Setup:</strong> <?php echo $apiData['setup']; ?></p>
         <p><strong>Punchline:</strong> <?php echo $apiData['punchline']; ?></p>

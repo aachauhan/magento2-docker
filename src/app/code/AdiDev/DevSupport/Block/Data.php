@@ -33,8 +33,8 @@ class Data extends \Magento\Framework\View\Element\Template
             "punchline" => "A little plaque.",
             "id" => 255
         ];
-        return $sample_joke;
-        //return $this->apiData->execute();
+        // return $sample_joke;
+        return $this->apiData->execute();
     }
 
 

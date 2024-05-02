@@ -27,13 +27,7 @@ class Data extends \Magento\Framework\View\Element\Template
      */
     public function getAPIData(): array
     {
-        // $sample_joke = [
-        //     "type" => "general",
-        //     "setup" => "What kind of award did the dentist receive?",
-        //     "punchline" => "A little plaque.",
-        //     "id" => 255
-        // ];
-        // return $sample_joke;
+        // call to the API
         return $this->apiData->execute();
     }
 
